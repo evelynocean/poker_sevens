@@ -19,8 +19,8 @@ class Card
             Card::DIAMOND,
             Card::CLUD
         );
-        $poker = array();
 
+        $poker = [];
         foreach ($style as $key => $val) {
             for ($i = 1 ; $i <= 13; $i++) {
                 $poker[($key*13)+ $i] = $val.' '.$i;
@@ -63,13 +63,12 @@ class Card
      */
     public function Dealer($players = 4, $cards)
     {
-        $ret = array();
-
+        $ret = [];
         // 取最近滿足的整數
         $round = floor(count($cards) / $players);
 
         $i = 0;
-        $tail = array();
+        $tail = [];
         for ($j = 0; $j < count($cards); $j++) {
             if ($i >= $players) {
                 $tail[] = $cards[$j];
@@ -90,22 +89,29 @@ class Card
      * 列出花色牌面
      * @param $cards
      */
-    public function watch_card($cards)
+    public function watch_card($cards, $command = null)
     {
         $mapping = $this->suit();
 
-        foreach ($cards as $kk) {
-            echo '<label style="background-color: lightgray;padding: 2px;">';
-            if ($kk >= 14 && $kk <= 26) {
-                echo '<font color="red">' . $mapping[$kk] . '</font>';
-            } elseif ($kk >= 27 && $kk <= 39) {
-                echo '<font color="orange">'.$mapping[$kk].'</font>';
-            } else {
-                echo $mapping[$kk];
+        if ( ! $command) {
+            foreach ($cards as $kk) {
+                echo '<label style="background-color: lightgray;padding: 2px;">';
+                if ($kk >= 14 && $kk <= 26) {
+                    echo '<font color="red">' . $mapping[$kk] . '</font>';
+                } elseif ($kk >= 27 && $kk <= 39) {
+                    echo '<font color="orange">'.$mapping[$kk].'</font>';
+                } else {
+                    echo $mapping[$kk];
+                }
+                echo '</label> &emsp;';
             }
-            echo '</label> &emsp;';
+            echo '<br>';
+        } else {
+            foreach ($cards as $kk) {
+                fwrite(STDOUT, $mapping[$kk]);
+            }
         }
-        echo '<br>';
+
 
     }
 }

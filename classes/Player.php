@@ -12,7 +12,7 @@ class Player
         $section = array_intersect($cards, array(20));
         sort($section);
 
-        return $section[0];
+        return ($section) ? $section[0] : false;
     }
 
     /**
@@ -21,24 +21,29 @@ class Player
      * @param $onTable
      * @return bool
      */
-    public function Call($group, $onTable)
+    public function Call($group, $onTable, $input = null)
     {
-        // 與桌上牌有交集的先出
-        if (array_intersect($group, $this->hitTable($onTable))) {
-            $section = array_intersect($group,  $this->hitTable($onTable));
-            rsort($section);
+        $on_tables = $this->hitTable($onTable);
 
-            return $section[0];
-        // 7 先出
-        } elseif (array_intersect($group, array(7, 33, 46))) {
-            $section = array_intersect($group, array(7, 33, 46));
-            rsort($section);
-
-            return $section[0];
-        } else {
-            // 無牌可出
-            return false;
+        if ($input) {
+            if (in_array($input, $on_tables) || in_array($input, array(7, 33, 46))) {
+                return $input;
+            } else {
+                return array("error" => "Call : illegal input.");
+            }
         }
+        // 與桌上牌有交集的先出
+        $section = [];
+        if (array_intersect($group, $on_tables)) {
+            $section = array_intersect($group,  $on_tables);
+        // 7 先出
+        } elseif (array_intersect($group, array(7, 33, 46)) ) {
+            $section = array_intersect($group, array(7, 33, 46));
+        }
+
+        rsort($section);
+
+        return $section[0];
     }
 
     /**
@@ -46,20 +51,28 @@ class Player
      * @param $group
      * @return mixed
      */
-    public function Fold($group)
+    public function Fold($group, $input)
     {
+        if ($input) return $input;
+
+        if ($input) {
+            return (in_array($input, $group)) ? $input : array("error" => "Fold : illegal input.");
+        }
+
         sort($group);
         if(count($group) == 1) return $group[0];
 
         arsort($group);
-        $new = array();
+
+        $new = [];
         foreach ($group as $val) {
             $section = ($val%13 > 7 || $val%13 == 0) ? 'upper' : 'lower';
-            $new[floor($val/13)][$section][] = $val%13;
+            $idx = ($val%13 === 0) ? (floor($val/13) - 1) : floor($val/13);
+            $new[$idx][$section][] = ($val%13 == 0) ? $val : $val%13;
         }
 
         // 計算權重
-        $result = array();
+        $result = [];
         for($i = 0 ; $i < count($new); $i++) {
             $result += $this->weight($i, $new[$i]);
         }
@@ -76,7 +89,7 @@ class Player
      */
     private function hitTable($onTables)
     {
-        $ret = array();
+        $ret = [];
         foreach ($onTables as $val) {
             if (($val - 1) > 0) $ret[] = $val - 1;
             if (($val + 1) <= 52 ) $ret[] = $val + 1;
@@ -88,14 +101,13 @@ class Player
 
     /**
      * 計算蓋牌權重
-     *
      * @param $tag
      * @param $cards
      * @return array
      */
     private function weight($tag, $cards)
     {
-        $ret = array();
+        $ret = [];
         if (isset($cards['upper']) && is_array($cards['upper'])) {
             $ret += $this->weight_process($tag, $cards['upper']);
         }
@@ -108,10 +120,17 @@ class Player
         return $ret;
     }
 
+    /**
+     * 計算蓋牌權重
+     * @param $tag
+     * @param $cards
+     * @return array
+     */
     private function weight_process($tag, $cards)
     {
-        $ret = array();
+        $ret = [];
         $sum = 0;
+
         foreach ($cards as $key => $val) {
             if ($sum == 0) {
                 $ret[$val + ($tag*13)] = $val * count($cards);

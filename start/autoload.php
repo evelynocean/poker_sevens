@@ -1,9 +1,12 @@
 <?php
-
 function autoload($classname)
 {
     $classname = ltrim($classname, '\\');
     $file = "classes/";
+
+    if ( ! file_exists($file.$classname.'.php')) {
+        $file = "../classes/";
+    }
 
     // exist namespace
     if ($lastpos = strrpos($classname, '\\')) {
