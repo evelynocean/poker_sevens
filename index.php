@@ -1,65 +1,59 @@
 <?php
 header("Content-Type:text/html; charset=utf-8");
+?>
 
-include_once('start/autoload.php');
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="asset/css/lib/jquery-ui-1.11.3.min.css" rel="stylesheet">
+    <link href="asset/css/lib/bootstrap.css" rel="stylesheet">
+    <link href="asset/css/lib/material.css" rel="stylesheet">
+    <link href="asset/css/lib/ripples.css" rel="stylesheet">
+    <link href="asset/css/seven.css" rel="stylesheet">
+</head>
+<body>
+<div class="header-panel shadow-z-2">
+    <button class="btn btn-primary start_btn">發牌</button>
+</div>
 
-// 玩家
-$players = array("玩家1", "玩家2", "玩家3", "玩家4", "玩家5");
+<div>
+    <div class="col-xs-3 table">
+        <nav class="table_content">
+            <?php for ($i = 1; $i <= 4; $i++): ?>
+            <div class="on_table_suit<?=$i ?>"></div>
+            <?php endfor; ?>
+        </nav>
+    </div>
+</div>
 
-// 發牌
-$cardObj = new Card();
-$cards = $cardObj->create();
-$cards = $cardObj->shuffle($cards);
-$groups =$cardObj->Dealer(count($players), $cards);
-// suit
-$suit = $cardObj->suit();
-echo json_encode($groups).'<br>';
-//$groups = json_decode('[[14,3,47,6,20,33,17,51,9,11,29],[21,13,7,5,34,8,40,10,30,12,31],[32,16,43,28,45,42,15,36,26,25],[23,38,52,22,39,27,2,44,24,49],[35,41,48,4,37,1,19,46,50,18]]');
-// testing
-foreach ($groups as $key => $val) {
-    echo '['.$players[$key].'] &emsp;';
-    sort($val);
-    $cardObj->watch_card($val);
-}
-echo '<hr>';
+<?php foreach (array(1 =>'a', 2 => 'b', 3 => 'c', 4 => 'd') as $key => $val): ?>
+<div class="col-xs-3 player player1">
+玩家 <?=$val?> <p>
+    <div class="card_set_player<?=$key?>"></div>
+    <div><input type="checkbox" id="fold_player<?=$key?>" value="<?=$key?>"/>蓋牌
+        <div class="fold_player<?=$key?>"></div>
+    </div>
+</div>
+<?php endforeach; ?>
 
-// 遊戲開始
-$flow = new Flow();
-$tab = new Table();
-$flow::$members = count($players);
-// 第一手
-$card = $flow->fire($groups);
-$tab->add($card);
-echo $players[$flow->now_player()].' : '.$suit[$card].'<br>';
-
-for ($i = 0; $i < 55; $i++) {
-    $flow->move_next();
-    $card = $flow->run($tab->get_on_table());
-
-    if (! $card) {
-        echo '['.$i.'] '.$players[$flow->now_player()].' : PASS ! <br>';
-        continue; // 沒牌了
-    }
-
-    if ($card > 0) {
-        $tab->add($card);
-        $show_card = $suit[$card];
-    } else {
-        $tab->discard($flow->now_player(), -intval($card));
-        $show_card = "<font color='blue'>蓋牌 ".$suit[-intval($card)]."</font>";
-    }
-
-    echo '['.$i.'] '.$players[$flow->now_player()].' : '.$show_card.'<br>';
-
-    // test
-    foreach ($flow->hands() as $key => $val) {
-        echo '['.$players[$key].'] &emsp;';
-        sort($val);
-        $cardObj->watch_card($val);
-    }
-    echo '<hr>';
-}
-
-// 結果
-$loser = $flow->counting($tab->get_discard());
-echo "LOSER : ".$players[$loser];
+<!--<div id="dialog" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">-->
+<!--    <div class="modal-backdrop fade" style="height: 331px;"></div>-->
+<!--    <div class="modal-dialog">-->
+<!--        <div class="modal-content">-->
+<!--            <div class="modal-body">-->
+<!--                <p> Test </p>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<script src="asset/js/lib/jquery-1.11.0.min.js"></script>
+<script src="asset/js/lib/bootstrap.js"></script>
+<script src="asset/js/lib/material.js"></script>
+<script src="asset/js/lib/math.min.js"></script>
+<script src="asset/js/lib/ripples.js"></script>
+<script src="asset/js/lib/underscore.js"></script>
+<script src="asset/js/seven.js"></script>
+</body>
+</html>

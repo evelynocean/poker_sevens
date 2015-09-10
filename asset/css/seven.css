@@ -1,0 +1,84 @@
+body {
+    background-color: #45a176;
+}
+
+.header-panel {
+    background-color: #265941;
+    height: 60px;
+    position: relative;
+    text-align: center;
+    width: 100%;
+}
+
+.start_btn {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.table {
+    margin-top: 20px;
+    background-color: #45a176;
+    height: 500px;
+    text-align: center;
+    width: 99%;
+
+}
+
+.table_content {
+    width: 70%;
+    background-color: #ad7d4c;
+    height: 500px;
+    box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: 0 15%;
+}
+
+.player {
+    margin: 8px;
+    height: 280px;
+    width: 23%;
+    text-align: center;
+    box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.player1 {
+    background-color: #e3f2fd;
+    text-align: left;
+}
+
+.player2 {
+    background-color: #fce4ec;
+    text-align: left;
+}
+
+.player3 {
+    background-color: #e3f2fd;
+    text-align: left;
+}
+
+.player4 {
+    background-color: #fce4ec;
+    text-align: left;
+}
+
+.btn_card {
+    width: 60px;
+    margin: 4px;
+}
+
+.modal-dialog {
+    display: none;
+}
+.modal-content {
+    height: 20px;
+}
+
+.now_player {
+    border: 5px solid red;
+}
+
+label {
+    background-color: #d4d4d4;
+    padding: 0 30px 4px 30px;
+    font-size: 16pt;
+    box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
